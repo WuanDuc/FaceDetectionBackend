@@ -61,8 +61,8 @@ def image():
     if(request.method == "POST"):
         bytesOfImage = request.get_data()
         with open('image.jpeg', 'wb') as out:
-            #out.write(bytesOfImage)
-            out.write(base64.decodebytes(bytesOfImage))
+            out.write(bytesOfImage)
+            #out.write(base64.decodebytes(bytesOfImage))
         detect()
         return "Image read"
 @app.route("/video", methods=['GET', 'POST'])
