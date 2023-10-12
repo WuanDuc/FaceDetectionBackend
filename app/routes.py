@@ -12,7 +12,7 @@ import imutils
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
-    path = '/home/wuan/FaceDetectOnReactNative/testFlask/image.jpeg'
+    path = 'image.jpeg'
     image = cv2.imread(path)
     if image is None:
         print('Wrong path:', path)
