@@ -1,4 +1,5 @@
 Flask
+Flask-Cors
 Gunicorn
 opencv-python
 imutils
