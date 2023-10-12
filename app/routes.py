@@ -12,7 +12,7 @@ import imutils
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
-    path = 'image.jpeg'
+    path = '/opt/render/project/src/image.jpeg'
     image = cv2.imread(path)
     if image is None:
         print('Wrong path:', path)
@@ -23,8 +23,8 @@ def detect():
     (h, w) = image.shape[:2]
     print(w,h)
     print("[INFO] loading model...")
-    prototxt = 'deploy.prototxt'
-    model = 'res10_300x300_ssd_iter_140000.caffemodel'
+    prototxt = '/opt/render/project/src/deploy.prototxt'
+    model = '/opt/render/project/src/res10_300x300_ssd_iter_140000.caffemodel'
     net = cv2.dnn.readNetFromCaffe(prototxt, model)
     image = imutils.resize(image, width=400)
     blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
@@ -48,7 +48,7 @@ def detect():
             cv2.rectangle(image, (startX, startY), (endX, endY), (0, 0, 255), 2)
             cv2.putText(image, text, (startX, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-            cv2.imwrite("image.jpeg", image)
+            cv2.imwrite("/opt/render/project/src/image.jpeg", image)
 
 
 @app.route('/')
@@ -60,7 +60,7 @@ def index():
 def image():
     if(request.method == "POST"):
         bytesOfImage = request.get_data()
-        with open('image.jpeg', 'wb') as out:
+        with open('/opt/render/project/src/image.jpeg', 'wb') as out:
             out.write(bytesOfImage)
             #out.write(base64.decodebytes(bytesOfImage))
         detect()
@@ -69,7 +69,7 @@ def image():
 def video():
     if(request.method == "POST"):
         bytesOfVideo = request.get_data()
-        with open('video.mp4', 'wb') as out:
+        with open('/opt/render/project/src/video.mp4', 'wb') as out:
             out.write(bytesOfVideo)
         return "Video read"
 @app.route("/get_image", methods=['GET'])
