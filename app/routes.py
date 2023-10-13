@@ -13,7 +13,7 @@ import imutils
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
     path = '../image.jpeg'
-    if os.path.exists(path):
+    if os.path.isfile(path):
         print("ok")
     else:
         print('FILE NOT FOUND')
