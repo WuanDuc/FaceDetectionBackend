@@ -13,6 +13,11 @@ import imutils
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
     path = '../image.jpeg'
+    if os.path.exists(path):
+        print("ok")
+    else:
+        print('FILE NOT FOUND')
+        return
     image = cv2.imread(path)
     if image is None:
         print('Wrong path:', path)
@@ -60,7 +65,7 @@ def index():
 def image():
     if(request.method == "POST"):
         bytesOfImage = request.get_data()
-        with open('/../image.jpeg', 'wb') as out:
+        with open('../image.jpeg', 'wb') as out:
             out.write(bytesOfImage)
             #out.write(base64.decodebytes(bytesOfImage))
         detect()
