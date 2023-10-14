@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, send_file
+from flask import make_response, render_template, send_file
 from flask import Flask, Response, request, jsonify
 from io import BytesIO
 import base64
@@ -12,7 +12,7 @@ import imutils
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
-    path = '../image.jpeg'
+    path = 'image.jpeg'
     if os.path.isfile(path):
         print("ok")
     else:
@@ -64,7 +64,7 @@ def detect():
             cv2.rectangle(image, (startX, startY), (endX, endY), (0, 0, 255), 2)
             cv2.putText(image, text, (startX, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
-            cv2.imwrite("../image.jpeg", image)
+            cv2.imwrite("image.jpeg", image)
 
 
 @app.route('/')
@@ -76,7 +76,7 @@ def index():
 def image():
     if(request.method == "POST"):
         bytesOfImage = request.get_data()
-        with open('../image.jpeg', 'wb') as out:
+        with open('image.jpeg', 'wb') as out:
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
         detect()
@@ -85,14 +85,12 @@ def image():
 def video():
     if(request.method == "POST"):
         bytesOfVideo = request.get_data()
-        with open('../video.mp4', 'wb') as out:
+        with open('video.mp4', 'wb') as out:
             out.write(bytesOfVideo)
         return "Video read"
 @app.route("/get_image", methods=['GET'])
 def get_image():
-    image_path = 'image.jpeg'
-
-    try:
-        return send_file(image_path, mimetype='image/jpeg')
-    except FileNotFoundError:
-        return "Image not found", 404
+    file_path = 'image.jpeg'
+    response = make_response(send_file(file_path,mimetype='image/png'))
+    response.headers['Content-Transfer-Encoding']='base64'
+    return response 
