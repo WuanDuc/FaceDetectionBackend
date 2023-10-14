@@ -30,7 +30,17 @@ def detect():
     print(w,h)
     print("[INFO] loading model...")
     prototxt = '../deploy.prototxt.txt'
+    if os.path.isfile(prototxt):
+        print("ok")
+    else:
+        print('FILE NOT FOUND')
+        return
     model = '../res10_300x300_ssd_iter_140000.caffemodel'
+    if os.path.isfile(model):
+        print("ok")
+    else:
+        print('FILE NOT FOUND')
+        return
     net = cv2.dnn.readNetFromCaffe(prototxt, model)
     image = imutils.resize(image, width=400)
     blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
