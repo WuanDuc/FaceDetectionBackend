@@ -29,7 +29,7 @@ def detect():
     (h, w) = image.shape[:2]
     print(w,h)
     print("[INFO] loading model...")
-    prototxt = '../deploy.prototxt'
+    prototxt = '../deploy.prototxt.txt'
     model = '../res10_300x300_ssd_iter_140000.caffemodel'
     net = cv2.dnn.readNetFromCaffe(prototxt, model)
     image = imutils.resize(image, width=400)
