@@ -19,6 +19,7 @@ def detect():
         print('FILE NOT FOUND')
         return
     image = cv2.imread(path)
+    assert not isinstance(image,type(None)), 'image not found'
     if image is None:
         print('Wrong path:', path)
     else:
