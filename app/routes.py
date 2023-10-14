@@ -29,7 +29,7 @@ def detect():
     (h, w) = image.shape[:2]
     print(w,h)
     print("[INFO] loading model...")
-    prototxt = '../deploy.prototxt.txt'
+    prototxt = '../deploy.prototxt'
     if os.path.isfile(prototxt):
         print("ok")
     else:
