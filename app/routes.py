@@ -29,17 +29,17 @@ def detect():
     (h, w) = image.shape[:2]
     print(w,h)
     print("[INFO] loading model...")
-    prototxt = '../deploy.prototxt'
+    prototxt = 'deploy.prototxt'
     if os.path.isfile(prototxt):
         print("ok")
     else:
-        print('FILE NOT FOUND')
+        print('[FILE NOT FOUND] prototxt is not found')
         return
-    model = '../res10_300x300_ssd_iter_140000.caffemodel'
+    model = 'res10_300x300_ssd_iter_140000.caffemodel'
     if os.path.isfile(model):
         print("ok")
     else:
-        print('FILE NOT FOUND')
+        print('[FILE NOT FOUND] model not found')
         return
     net = cv2.dnn.readNetFromCaffe(prototxt, model)
     image = imutils.resize(image, width=400)
