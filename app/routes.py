@@ -81,6 +81,15 @@ def image():
             out.write(base64.decodebytes(bytesOfImage))
         detect()
         return "Image read"
+    else:
+        file_path = 'image.jpeg'
+        if os.path.isfile(file_path):
+            print("ok")
+        else:
+            print('FILE NOT FOUND')
+        response = make_response(send_file(file_path,mimetype='image/png'))
+        response.headers['Content-Transfer-Encoding']='base64'
+        return response 
 @app.route("/video", methods=['GET', 'POST'])
 def video():
     if(request.method == "POST"):
@@ -90,12 +99,3 @@ def video():
         return "Video read"
 # @app.route("/get_image", methods=['GET'])
 # def get_image():
-#     file_path = 'image.jpeg'
-#     if os.path.isfile(file_path):
-#         print("ok")
-#     else:
-#         print('FILE NOT FOUND')
-#         return
-#     response = make_response(send_file(file_path,mimetype='image/png'))
-#     response.headers['Content-Transfer-Encoding']='base64'
-#     return response 
