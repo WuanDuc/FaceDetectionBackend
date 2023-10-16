@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 from base64 import b64decode
 import imutils
+import shutil
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
@@ -80,12 +81,14 @@ def image():
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
         detect()
-        file_path = '../src/image.jpeg'
+        file_path = 'image.jpeg'
+        copy_file_path = 'app/'
+        shutil.copyfile(file_path,copy_file_path)
         if os.path.isfile(file_path):
             print("ok")
         else:
             print('FILE NOT FOUND')
-        response = make_response(send_file(file_path,mimetype='image/png'))
+        response = make_response(send_file(copy_file_path,mimetype='image/png'))
         response.headers['Content-Transfer-Encoding']='base64'
         print(response)
         return response 
