@@ -13,7 +13,7 @@ import shutil
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
-    path = 'image.jpeg'
+    path = 'app/image.jpeg'
     if os.path.isfile(path):
         print("ok")
     else:
@@ -80,10 +80,10 @@ def image():
         with open('image.jpeg', 'wb') as out:
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
-        detect()
         file_path = 'image.jpeg'
         copy_file_path = 'app/image.jpeg'
         shutil.copyfile(file_path,copy_file_path)
+        detect()
         if os.path.isfile(file_path):
             print("ok")
         else:
