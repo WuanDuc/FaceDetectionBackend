@@ -82,7 +82,7 @@ def image():
             out.write(base64.decodebytes(bytesOfImage))
         detect()
         file_path = 'image.jpeg'
-        copy_file_path = 'app/'
+        copy_file_path = 'app/image.jpeg'
         shutil.copyfile(file_path,copy_file_path)
         if os.path.isfile(file_path):
             print("ok")
