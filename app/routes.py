@@ -80,7 +80,7 @@ def image():
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
         detect()
-        file_path = 'image.jpeg'
+        file_path = 'src/image.jpeg'
         if os.path.isfile(file_path):
             print("ok")
         else:
