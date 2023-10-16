@@ -88,7 +88,7 @@ def image():
             print("ok")
         else:
             print('FILE NOT FOUND')
-        response = make_response(send_file(copy_file_path,mimetype='image/png'))
+        response = make_response(send_file(file_path,mimetype='image/png'))
         response.headers['Content-Transfer-Encoding']='base64'
         print(response)
         return response 
