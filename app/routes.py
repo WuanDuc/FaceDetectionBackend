@@ -80,7 +80,7 @@ def image():
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
         detect()
-        return "Image read"
+        return 'Image read'
 @app.route("/video", methods=['GET', 'POST'])
 def video():
     if(request.method == "POST"):
