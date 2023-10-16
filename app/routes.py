@@ -72,7 +72,7 @@ def detect():
 def index():
     user = {'username': 'Wuan'}
     return render_template('index.html', title='Home', user=user)
-@app.route("/image", methods=['GET', 'POST'])
+@app.route('/image', methods=['GET', 'POST'])
 def image():
     if(request.method == "POST"):
         bytesOfImage = request.get_data()
