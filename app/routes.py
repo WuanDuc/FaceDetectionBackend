@@ -87,6 +87,7 @@ def image():
             print('FILE NOT FOUND')
         response = make_response(send_file(file_path,mimetype='image/png'))
         response.headers['Content-Transfer-Encoding']='base64'
+        print(response)
         return response 
     else:
         file_path = 'image.jpeg'
