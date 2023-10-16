@@ -80,7 +80,14 @@ def image():
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
         detect()
-        return "Image read"
+        file_path = 'image.jpeg'
+        if os.path.isfile(file_path):
+            print("ok")
+        else:
+            print('FILE NOT FOUND')
+        response = make_response(send_file(file_path,mimetype='image/png'))
+        response.headers['Content-Transfer-Encoding']='base64'
+        return response 
     else:
         file_path = 'image.jpeg'
         if os.path.isfile(file_path):
