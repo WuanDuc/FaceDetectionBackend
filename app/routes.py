@@ -13,7 +13,7 @@ import shutil
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
-    path = 'app/image.jpeg'
+    path = 'image.jpeg'
     if os.path.isfile(path):
         print("ok")
     else:
