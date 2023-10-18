@@ -80,15 +80,11 @@ def image():
         with open('image.jpeg', 'wb') as out:
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
-        file_path = 'image.jpeg'
-        copy_file_path = 'app/image.jpeg'
-        shutil.copyfile(file_path,copy_file_path)
-        detect()
-        if os.path.isfile(file_path):
-            print("ok")
-        else:
-            print('FILE NOT FOUND')
-        response = make_response(send_file(file_path,mimetype='image/png'))
+
+        with open('image.jpeg', 'wb') as image_file:
+            encoded_string = base64.b64encode(image_file.read())
+        #response = make_response(send_file(file_path,mimetype='image/png'))
+        response = make_response(encoded_string)
         response.headers['Content-Transfer-Encoding']='base64'
         print(response)
         return response 
@@ -108,5 +104,4 @@ def video():
         with open('video.mp4', 'wb') as out:
             out.write(bytesOfVideo)
         return "Video read"
-# @app.route("/get_image", methods=['GET'])
-# def get_image():
+
