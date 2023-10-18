@@ -80,7 +80,7 @@ def image():
         with open('image.jpeg', 'wb') as out:
             #out.write(bytesOfImage)
             out.write(base64.decodebytes(bytesOfImage))
-
+        detect()
         with open('image.jpeg', 'rb') as image_file:
             encoded_string = base64.b64encode(image_file.read())
         #response = make_response(send_file(file_path,mimetype='image/png'))
