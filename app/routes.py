@@ -10,6 +10,7 @@ import numpy as np
 from base64 import b64decode
 import imutils
 import shutil
+import time
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
