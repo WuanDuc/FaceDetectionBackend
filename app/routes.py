@@ -170,7 +170,7 @@ def detectVideo():
   (h, w) = frame.shape[:2]
 
   #out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mjpg'), fps, (w, h))
-  out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+  out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), fps, (w, h))
   image = detect(frame)
   # # Ghi frame đã detect vào video output
   out.write(image)
