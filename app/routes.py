@@ -217,10 +217,11 @@ def video():
         with open('video.mp4', 'wb') as out:
             out.write(base64.b64decode(bytesOfVideo))
         detectVideo()
-        with open("al.mp4", "rb") as videoFile:
+        with open("output_video.mp4", "rb") as videoFile:
             text = base64.b64encode(videoFile.read())
-            print(text)
+            #print(text)
         response = make_response(text)
         response.headers['Content-Transfer-Encoding']='base64'
+        print(response)
         return response
 
