@@ -224,7 +224,7 @@ def image():
 @app.route("/video", methods=['GET', 'POST'])
 def video():
     if(request.method == "POST"):
-        bytesOfVideo = request.get_data()
+        bytesOfVideo = request.get_data().decode('utf-8')
         # with open('video.mp4', 'wb') as out:
         #     out.write(base64.b64decode(bytesOfVideo))
         video_url = cloudinary.api.resource(bytesOfVideo)['url']
