@@ -4,3 +4,4 @@ Gunicorn
 opencv-python
 imutils
 numpy
+cloudinary

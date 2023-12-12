@@ -1,6 +1,7 @@
 from app import app
 from flask import make_response, render_template, send_file
 from flask import Flask, Response, request, jsonify
+import urllib.request
 from io import BytesIO
 import base64
 import os
@@ -11,6 +12,16 @@ from base64 import b64decode
 import imutils
 import shutil
 import time
+import cloudinary
+cloudinary.config( 
+  cloud_name = "dpej7xgsi", 
+  api_key = "528711498628591", 
+  api_secret = "zE8uzpVsTalZQmpeRHOvUnc81Fw",
+  api_proxy = "",
+)
+from cloudinary import uploader
+import cloudinary.api
+from cloudinary.utils import cloudinary_url
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
@@ -214,8 +225,11 @@ def image():
 def video():
     if(request.method == "POST"):
         bytesOfVideo = request.get_data()
-        with open('video.mp4', 'wb') as out:
-            out.write(base64.b64decode(bytesOfVideo))
+        # with open('video.mp4', 'wb') as out:
+        #     out.write(base64.b64decode(bytesOfVideo))
+        video_url = cloudinary.api.resource(bytesOfVideo)['url']
+
+        urllib.request.urlretrieve(video_url, 'video.mp4')
         detectVideo()
         with open("output_video.mp4", "rb") as videoFile:
             text = base64.b64encode(videoFile.read())
