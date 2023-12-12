@@ -228,10 +228,10 @@ def video():
         print(bytesOfVideo)
         # with open('video.mp4', 'wb') as out:
         #     out.write(base64.b64decode(bytesOfVideo))
-        video_url = cloudinary.api.resource(bytesOfVideo)['url']
-        print(video_url)
+        # video_url = cloudinary.api.resource(bytesOfVideo)['url']
+        # print(video_url)
 
-        urllib.request.urlretrieve(video_url, 'video.mp4')
+        urllib.request.urlretrieve(bytesOfVideo, 'video.mp4')
         detectVideo()
         with open("output_video.mp4", "rb") as videoFile:
             text = base64.b64encode(videoFile.read())
