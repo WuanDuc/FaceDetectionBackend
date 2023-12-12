@@ -225,6 +225,7 @@ def image():
 def video():
     if(request.method == "POST"):
         bytesOfVideo = request.get_data().decode('utf-8')
+        print(bytesOfVideo)
         # with open('video.mp4', 'wb') as out:
         #     out.write(base64.b64decode(bytesOfVideo))
         video_url = cloudinary.api.resource(bytesOfVideo)['url']
