@@ -240,10 +240,10 @@ def image():
         with open('image.jpeg', 'rb') as image_file:
             encoded_string = base64.b64encode(image_file.read())
         #response = make_response(send_file(file_path,mimetype='image/png'))
-        response = make_response(encoded_string)
-        response.headers['Content-Transfer-Encoding']='base64'
-        print(response)
-        return response 
+        res = cloudinary.uploader.unsigned_upload(open('image.jpeg','rb'), upload_preset='videoApp', resource_type='image')
+        
+        return jsonify({'url': res['url']})
+
 @app.route("/video", methods=['GET', 'POST'])
 def video():
     if(request.method == "POST"):
