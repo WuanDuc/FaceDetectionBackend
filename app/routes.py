@@ -194,7 +194,7 @@ def detectVideo():
   #out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mjpg'), fps, (w, h))
   out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), fps, (w, h))
   #out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 10, (w, h))
-  frame_interval = int(fps * 0.5)  # detect every half second
+  frame_interval = int(fps)  # detect every second
 
   frame_count = 0
   
