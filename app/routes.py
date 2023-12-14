@@ -233,9 +233,10 @@ def index():
 def image():
     if(request.method == "POST"):
         bytesOfImage = request.get_data()
-        with open('image.jpeg', 'wb') as out:
-            #out.write(bytesOfImage)
-            out.write(base64.decodebytes(bytesOfImage))
+        # with open('image.jpeg', 'wb') as out:
+        #     #out.write(bytesOfImage)
+        #     out.write(base64.decodebytes(bytesOfImage))
+        urllib.request.urlretrieve(bytesOfImage, 'image.jpeg')
         detectImage()
         with open('image.jpeg', 'rb') as image_file:
             encoded_string = base64.b64encode(image_file.read())
