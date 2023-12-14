@@ -1,6 +1,7 @@
 from app import app
 from flask import make_response, render_template, send_file
 from flask import Flask, Response, request, jsonify
+import urllib.request
 from io import BytesIO
 import base64
 import os
@@ -11,6 +12,15 @@ from base64 import b64decode
 import imutils
 import shutil
 import time
+import cloudinary.uploader
+cloudinary.config( 
+  cloud_name = "dpej7xgsi", 
+  api_key = "528711498628591", 
+  api_secret = "zE8uzpVsTalZQmpeRHOvUnc81Fw",
+)
+from cloudinary import uploader
+import cloudinary.api
+from cloudinary.utils import cloudinary_url
 
 def detect():
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
@@ -67,6 +77,11 @@ def detect():
             cv2.putText(image, text, (startX, y),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
             cv2.imwrite("image.jpeg", image)
+def draw(image, startX, startY, endX, endY, label):
+    cv2.rectangle(image, (startX, startY), (endX, endY), (0, 255, 0), 2)
+    cv2.putText(image, label, (startX, startY-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 0, 255), 1, cv2.LINE_AA)
+    return image
+
 def detect(image):
     #image = cv2.imread(image_file, cv2.IMREAD_UNCHANGED)
     image = imutils.resize(image, width=400)
@@ -104,6 +119,11 @@ def detect(image):
     MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
     ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
     genderList = ['Male', 'Female']
+    sX = 0
+    sY = 0
+    eX = 0
+    eY = 0
+    lb = ''
     for i in range(0, detections.shape[2]):
         # extract the confidence (i.e., probability) associated with the prediction
         confidence = detections[0, 0, i, 2]
@@ -114,6 +134,7 @@ def detect(image):
             box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
             (startX, startY, endX, endY) = box.astype("int")
             print(startX,startY,endX,endY)
+            (sX,sY,eX,eY) = (startX, startY, endX, endY)
             # draw the bounding box of the face along with the associated probability
             # text = "{:.2f}%".format(confidence * 100)
             y = startY - 10 if startY - 10 > 10 else startY + 10
@@ -131,8 +152,9 @@ def detect(image):
             age = ageList[agePreds[0].argmax()]
 
             label = "{},{}".format(gender, age)
+            lb = label
             cv2.putText(image, label, (startX, startY-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 0, 255), 1, cv2.LINE_AA)
-    return image
+    return image,sX,sY,eX,eY,lb
 def detectImage():
     path = 'image.jpeg'
     if os.path.isfile(path):
@@ -147,7 +169,7 @@ def detectImage():
     else:
         print('[RIGHT] right path:', path)
         print('[INFO] imagesize:', image.shape)
-    output = detect(image)
+    output, *_ = detect(image)
     cv2.imwrite("image.jpeg", output)
 def detectVideo():
   video_path = 'video.mp4'
@@ -171,7 +193,14 @@ def detectVideo():
 
   #out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc(*'mjpg'), fps, (w, h))
   out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), fps, (w, h))
-  image = detect(frame)
+  #out = cv2.VideoWriter(output_video_path, cv2.VideoWriter_fourcc('m', 'p', '4', 'v'), 10, (w, h))
+  frame_interval = int(fps * 0.5)  # detect every half second
+
+  frame_count = 0
+  
+  
+  
+  image, startX, startY, endX, endY, label = detect(frame)
   # # Ghi frame đã detect vào video output
   out.write(image)
   while True:
@@ -182,10 +211,15 @@ def detectVideo():
       # Detect khuôn mặt trên frame
       frame = imutils.resize(frame, width=400)
       (h, w) = frame.shape[:2]
-      image = detect(frame)
-
-      # # Ghi frame đã detect vào video output
-      out.write(image)
+      if frame_count % frame_interval == 0:
+          image, sX,sY,eX,eY,lb = detect(frame)
+          (startX,startY,endX,endY,label) = (sX,sY,eX,eY,lb)
+          # # Ghi frame đã detect vào video output
+          out.write(image)
+      else:
+          image = draw(frame,startX,startY,endX,endY,label)
+          out.write(image)
+      frame_count += 1
   cv2.destroyAllWindows()
   cap.release()
   out.release()
@@ -198,30 +232,35 @@ def index():
 @app.route('/image', methods=['GET', 'POST'])
 def image():
     if(request.method == "POST"):
-        bytesOfImage = request.get_data()
-        with open('image.jpeg', 'wb') as out:
-            #out.write(bytesOfImage)
-            out.write(base64.decodebytes(bytesOfImage))
+        bytesOfImage = request.get_data().decode('utf-8')
+        # with open('image.jpeg', 'wb') as out:
+        #     #out.write(bytesOfImage)
+        #     out.write(base64.decodebytes(bytesOfImage))
+        urllib.request.urlretrieve(bytesOfImage, 'image.jpeg')
         detectImage()
         with open('image.jpeg', 'rb') as image_file:
             encoded_string = base64.b64encode(image_file.read())
         #response = make_response(send_file(file_path,mimetype='image/png'))
-        response = make_response(encoded_string)
-        response.headers['Content-Transfer-Encoding']='base64'
-        print(response)
-        return response 
+        res = cloudinary.uploader.unsigned_upload(open('image.jpeg','rb'), upload_preset='videoApp', resource_type='image')
+        
+        return jsonify({'url': res['url']})
+
 @app.route("/video", methods=['GET', 'POST'])
 def video():
     if(request.method == "POST"):
-        bytesOfVideo = request.get_data()
-        with open('video.mp4', 'wb') as out:
-            out.write(base64.b64decode(bytesOfVideo))
+        bytesOfVideo = request.get_data().decode('utf-8')
+        print(bytesOfVideo)
+        # with open('video.mp4', 'wb') as out:
+        #     out.write(base64.b64decode(bytesOfVideo))
+        # video_url = cloudinary.api.resource(bytesOfVideo)['url']
+        # print(video_url)
+
+        urllib.request.urlretrieve(bytesOfVideo, 'video.mp4')
         detectVideo()
         with open("output_video.mp4", "rb") as videoFile:
             text = base64.b64encode(videoFile.read())
             #print(text)
-        response = make_response(text)
-        response.headers['Content-Transfer-Encoding']='base64'
-        print(response)
-        return response
+        res = cloudinary.uploader.unsigned_upload(open('output_video.mp4','rb'), upload_preset='videoApp', resource_type='video')
+        
+        return jsonify({'url': res['url']})
 
