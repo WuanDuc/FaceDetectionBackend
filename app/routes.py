@@ -232,7 +232,7 @@ def index():
 @app.route('/image', methods=['GET', 'POST'])
 def image():
     if(request.method == "POST"):
-        bytesOfImage = request.get_data()
+        bytesOfImage = request.get_data().decode('utf-8')
         # with open('image.jpeg', 'wb') as out:
         #     #out.write(bytesOfImage)
         #     out.write(base64.decodebytes(bytesOfImage))
