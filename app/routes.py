@@ -119,11 +119,7 @@ def detect(image):
     MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
     ageList = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
     genderList = ['Male', 'Female']
-    sX = 0
-    sY = 0
-    eX = 0
-    eY = 0
-    lb = ''
+    face_predict = []
     for i in range(0, detections.shape[2]):
         # extract the confidence (i.e., probability) associated with the prediction
         confidence = detections[0, 0, i, 2]
@@ -154,7 +150,14 @@ def detect(image):
             label = "{},{}".format(gender, age)
             lb = label
             cv2.putText(image, label, (startX, startY-10), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.8, (0, 0, 255), 1, cv2.LINE_AA)
-    return image,sX,sY,eX,eY,lb
+            face_predict.append({
+                "startX": startX,
+                "startY": startY,
+                "endX": endX,
+                "endY": endY,
+                "label": label
+            })
+    return image, face_predict
 def detectImage():
     path = 'image.jpeg'
     if os.path.isfile(path):
@@ -169,7 +172,8 @@ def detectImage():
     else:
         print('[RIGHT] right path:', path)
         print('[INFO] imagesize:', image.shape)
-    output, *_ = detect(image)
+    
+    output, b = detect(image)
     cv2.imwrite("image.jpeg", output)
 def detectVideo():
   video_path = 'video.mp4'
@@ -199,8 +203,9 @@ def detectVideo():
   frame_count = 0
   
   
-  
-  image, startX, startY, endX, endY, label = detect(frame)
+  detected_frames = []
+  image, detected_frames = detect(frame)
+
   # # Ghi frame đã detect vào video output
   out.write(image)
   while True:
@@ -212,12 +217,17 @@ def detectVideo():
       frame = imutils.resize(frame, width=400)
       (h, w) = frame.shape[:2]
       if frame_count % frame_interval == 0:
-          image, sX,sY,eX,eY,lb = detect(frame)
-          (startX,startY,endX,endY,label) = (sX,sY,eX,eY,lb)
+          image, detected_frames = detect(frame)
+          #(startX,startY,endX,endY,label) = (sX,sY,eX,eY,lb)
+
           # # Ghi frame đã detect vào video output
           out.write(image)
       else:
-          image = draw(frame,startX,startY,endX,endY,label)
+          if detected_frames:
+                latest_detection = detected_frames[-1]
+                image = draw(frame, latest_detection["startX"], latest_detection["startY"],
+                             latest_detection["endX"], latest_detection["endY"], latest_detection["label"])
+          #image = draw(frame,startX,startY,endX,endY,label)
           out.write(image)
       frame_count += 1
   cv2.destroyAllWindows()
